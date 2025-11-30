@@ -1,0 +1,22 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f97316;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ea580c;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="letterGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#fef3c7;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Rounded square background -->
+  <rect width="512" height="512" rx="100" fill="url(#bgGradient)"/>
+  
+  <!-- Letter B with modern geometric style -->
+  <path d="M160 140 H280 C340 140 360 160 360 200 C360 230 345 245 320 250 C350 255 370 275 370 310 C370 355 345 372 280 372 H160 V140 Z M220 190 V230 H270 C295 230 305 225 305 210 C305 195 295 190 270 190 H220 Z M220 270 V322 H275 C305 322 315 315 315 296 C315 277 305 270 275 270 H220 Z" fill="url(#letterGradient)"/>
+  
+  <!-- Subtle shadow effect -->
+  <path d="M160 140 H280 C340 140 360 160 360 200 C360 230 345 245 320 250 C350 255 370 275 370 310 C370 355 345 372 280 372 H160 V140 Z M220 190 V230 H270 C295 230 305 225 305 210 C305 195 295 190 270 190 H220 Z M220 270 V322 H275 C305 322 315 315 315 296 C315 277 305 270 275 270 H220 Z" fill="black" opacity="0.1" transform="translate(3, 3)"/>
+</svg>
