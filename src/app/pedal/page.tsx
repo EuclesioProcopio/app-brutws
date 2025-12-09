@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { storage } from '@/lib/store';
 import { UserProfile } from '@/lib/types';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Bike, MapPin, Users, Trophy, Target, TrendingUp, Clock, Flame } from 'lucide-react';
+import { ArrowLeft, Bike, MapPin, Users, Trophy, Target, TrendingUp, Clock, Flame, Navigation } from 'lucide-react';
 
 interface Route {
   id: string;
@@ -23,6 +23,7 @@ export default function PedalPage() {
   const router = useRouter();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [activeTab, setActiveTab] = useState<'rotas' | 'comunidade' | 'metas'>('rotas');
+  const [locationStatus, setLocationStatus] = useState<string>('');
 
   useEffect(() => {
     const userProfile = storage.getUserProfile();
@@ -32,6 +33,89 @@ export default function PedalPage() {
     }
     setProfile(userProfile);
   }, [router]);
+
+  const handleLocationClick = () => {
+    setLocationStatus('Verificando permissões...');
+    
+    // Verifica se o navegador suporta geolocalização
+    if (!('geolocation' in navigator)) {
+      setLocationStatus('Geolocalização não suportada. Abrindo Google Maps...');
+      setTimeout(() => {
+        window.open('https://www.google.com/maps', '_blank');
+        setLocationStatus('');
+      }, 2000);
+      return;
+    }
+
+    // Verifica permissões primeiro
+    if ('permissions' in navigator) {
+      navigator.permissions.query({ name: 'geolocation' }).then((result) => {
+        if (result.state === 'denied') {
+          setLocationStatus('⚠️ Permissão de localização negada. Para ativar: vá em Configurações do navegador > Permissões > Localização e permita para este site.');
+          setTimeout(() => {
+            window.open('https://www.google.com/maps', '_blank');
+            setLocationStatus('');
+          }, 5000);
+          return;
+        }
+        
+        // Se não foi negada, tenta obter localização
+        obterLocalizacao();
+      }).catch(() => {
+        // Se a API de permissões não funcionar, tenta obter localização diretamente
+        obterLocalizacao();
+      });
+    } else {
+      // Se a API de permissões não existir, tenta obter localização diretamente
+      obterLocalizacao();
+    }
+  };
+
+  const obterLocalizacao = () => {
+    setLocationStatus('Obtendo sua localização...');
+    
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        setLocationStatus(`✅ Localização obtida! Abrindo mapa...`);
+        
+        setTimeout(() => {
+          window.open(`https://www.google.com/maps/search/?api=1&query=${lat},${lng}`, '_blank');
+          setLocationStatus('');
+        }, 1000);
+      },
+      (error) => {
+        let errorMessage = '';
+        
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            errorMessage = '⚠️ Permissão de localização negada. Para ativar: vá em Configurações do navegador > Permissões > Localização e permita para este site.';
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMessage = '⚠️ Localização indisponível no momento. Abrindo Google Maps...';
+            break;
+          case error.TIMEOUT:
+            errorMessage = '⚠️ Tempo esgotado ao obter localização. Abrindo Google Maps...';
+            break;
+          default:
+            errorMessage = '⚠️ Erro ao obter localização. Abrindo Google Maps...';
+        }
+        
+        setLocationStatus(errorMessage);
+        
+        setTimeout(() => {
+          window.open('https://www.google.com/maps', '_blank');
+          setLocationStatus('');
+        }, error.code === error.PERMISSION_DENIED ? 5000 : 2000);
+      },
+      {
+        enableHighAccuracy: false, // Menos restritivo
+        timeout: 10000,
+        maximumAge: 60000 // Aceita cache de até 1 minuto
+      }
+    );
+  };
 
   if (!profile) return null;
 
@@ -121,7 +205,7 @@ export default function PedalPage() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center gap-4">
             <Link href="/dashboard">
-              <Button variant="ghost" size="icon" className="text-gray-400 hover:text-white">
+              <Button variant="ghost" size="icon" className="bg-orange-600 hover:bg-orange-700 text-white border-orange-600">
                 <ArrowLeft className="w-5 h-5" />
               </Button>
             </Link>
@@ -215,15 +299,53 @@ export default function PedalPage() {
         {activeTab === 'rotas' && (
           <div className="space-y-6">
             {/* Map Placeholder */}
-            <div className="bg-gray-900 rounded-2xl p-8 border border-gray-800 text-center">
-              <MapPin className="w-16 h-16 text-yellow-500 mx-auto mb-4" />
-              <h3 className="text-xl font-bold mb-2">Mapa Interativo</h3>
-              <p className="text-gray-400 mb-4">
-                Visualize rotas em tempo real com mapas via satélite
-              </p>
-              <Button className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-semibold">
-                Abrir Mapa (Em breve)
+            <div className="bg-gray-900 rounded-2xl p-8 border border-gray-800">
+              <div className="text-center mb-6">
+                <MapPin className="w-16 h-16 text-yellow-500 mx-auto mb-4" />
+                <h3 className="text-xl font-bold mb-2">Mapa Interativo</h3>
+                <p className="text-gray-400 mb-4">
+                  Abra o Google Maps para visualizar rotas e sua localização
+                </p>
+              </div>
+
+              <Button 
+                onClick={handleLocationClick}
+                className="w-full bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-semibold transition-all duration-300"
+              >
+                <Navigation className="w-4 h-4 mr-2" />
+                Obter Minha Localização
               </Button>
+
+              {locationStatus && (
+                <div className={`mt-4 p-4 rounded-lg text-center ${
+                  locationStatus.includes('⚠️') 
+                    ? 'bg-orange-500/20 border border-orange-500/50' 
+                    : locationStatus.includes('✅')
+                    ? 'bg-green-500/20 border border-green-500/50'
+                    : 'bg-blue-500/20 border border-blue-500/50'
+                }`}>
+                  <p className={`text-sm ${
+                    locationStatus.includes('⚠️') 
+                      ? 'text-orange-400' 
+                      : locationStatus.includes('✅')
+                      ? 'text-green-400'
+                      : 'text-blue-400'
+                  }`}>
+                    {locationStatus}
+                  </p>
+                </div>
+              )}
+
+              <div className="mt-4 p-4 bg-gray-800/50 rounded-lg">
+                <p className="text-xs text-gray-400 mb-2">
+                  <strong>💡 Como permitir localização:</strong>
+                </p>
+                <ul className="text-xs text-gray-500 space-y-1 list-disc list-inside">
+                  <li>Chrome/Edge: Clique no ícone de cadeado/informações ao lado da URL → Permissões → Localização → Permitir</li>
+                  <li>Firefox: Clique no ícone de informações → Permissões → Localização → Permitir</li>
+                  <li>Safari: Safari → Preferências → Sites → Localização → Permitir</li>
+                </ul>
+              </div>
             </div>
 
             {/* Popular Routes */}

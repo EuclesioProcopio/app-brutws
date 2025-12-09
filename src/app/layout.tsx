@@ -17,8 +17,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Brutws - Transforme Seu Corpo e Alimentação",
-  description: "O aplicativo inovador que treina, nutre e motiva você a superar seus limites. Vídeos orientativos, rotas personalizadas e monitoramento de calorias.",
+  title: "Criado com a Lasy",
+  description: "Projeto criado com Lasy AI",
 };
 
 export default function RootLayout({

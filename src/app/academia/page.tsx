@@ -123,7 +123,7 @@ export default function AcademiaPage() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center gap-4">
             <Link href="/dashboard">
-              <Button variant="ghost" size="icon" className="text-gray-400 hover:text-white">
+              <Button variant="ghost" size="icon" className="bg-orange-600 hover:bg-orange-700 text-white border-orange-600">
                 <ArrowLeft className="w-5 h-5" />
               </Button>
             </Link>

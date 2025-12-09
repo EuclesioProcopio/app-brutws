@@ -9,14 +9,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Dumbbell, Bike, Apple, Heart } from 'lucide-react';
+import { Dumbbell, Bike, Apple } from 'lucide-react';
 
 export default function OnboardingForm() {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState<Partial<UserProfile>>({
     objetivos: [],
-    sexo: 'masculino', // valor inicial para o radio group funcionar
   });
 
   const handleSubmit = () => {
@@ -205,7 +204,7 @@ export default function OnboardingForm() {
                 <Button
                   onClick={() => setStep(1)}
                   variant="outline"
-                  className="flex-1 border-orange-500 bg-orange-500 text-white hover:bg-orange-600 hover:border-orange-600"
+                  className="flex-1 border-gray-700 text-gray-300 hover:bg-gray-800"
                 >
                   Voltar
                 </Button>
@@ -224,20 +223,19 @@ export default function OnboardingForm() {
             <div className="space-y-6">
               <h2 className="text-2xl font-bold mb-6">Nível de Experiência</h2>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-6">
                 {/* Academia */}
-                <div className="bg-gray-800 p-5 rounded-xl border border-gray-700 flex flex-col h-full">
+                <div className="bg-gray-800 p-5 rounded-xl border border-gray-700">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="p-2 bg-orange-500/20 rounded-lg">
-                      <Heart className="w-6 h-6 text-orange-500" />
+                      <Dumbbell className="w-6 h-6 text-orange-500" />
                     </div>
-                    <Label className="text-lg font-semibold text-white">Academia</Label>
+                    <Label className="text-lg font-semibold text-white">Academia / Musculação</Label>
                   </div>
-                  <p className="text-sm text-gray-400 mb-4">Planos de treino personalizados para todos</p>
                   <RadioGroup
                     value={formData.nivelAcademia}
                     onValueChange={(value) => setFormData({ ...formData, nivelAcademia: value as ExperienceLevel })}
-                    className="space-y-2 flex-1"
+                    className="space-y-2"
                   >
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="iniciante" id="academia-iniciante" />
@@ -255,18 +253,17 @@ export default function OnboardingForm() {
                 </div>
 
                 {/* Pedal/Corrida */}
-                <div className="bg-gray-800 p-5 rounded-xl border border-gray-700 flex flex-col h-full">
+                <div className="bg-gray-800 p-5 rounded-xl border border-gray-700">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="p-2 bg-yellow-500/20 rounded-lg">
                       <Bike className="w-6 h-6 text-yellow-500" />
                     </div>
-                    <Label className="text-lg font-semibold text-white">Pedal / Corrida</Label>
+                    <Label className="text-lg font-semibold text-white">Pedal / Caminhada / Corrida</Label>
                   </div>
-                  <p className="text-sm text-gray-400 mb-4">Treinos de cardio e resistência</p>
                   <RadioGroup
                     value={formData.nivelPedal}
                     onValueChange={(value) => setFormData({ ...formData, nivelPedal: value as ExperienceLevel, nivelCorrida: value as ExperienceLevel })}
-                    className="space-y-2 flex-1"
+                    className="space-y-2"
                   >
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="iniciante" id="pedal-iniciante" />
@@ -288,7 +285,7 @@ export default function OnboardingForm() {
                 <Button
                   onClick={() => setStep(2)}
                   variant="outline"
-                  className="flex-1 border-black bg-black text-white hover:bg-gray-900 hover:border-gray-800"
+                  className="flex-1 border-gray-700 text-gray-300 hover:bg-gray-800"
                 >
                   Voltar
                 </Button>
